@@ -1,6 +1,3 @@
-cmd('hi! Tab guifg=#a6adc8')
-cmd('hi! TabSel guifg=#a6e3a1 gui=bold')
-
 M = {}
 
 M.get_item = function(group, item, index, modified)
