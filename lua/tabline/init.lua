@@ -46,4 +46,8 @@ M.run = function()
 	return s
 end
 
+M.setup = function()
+	vim.opt.tal = '%!v:lua.require("tabline").run()'
+end
+
 return M

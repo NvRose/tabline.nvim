@@ -17,4 +17,4 @@ NvRose is released under MIT license, which grants the following permissions:
 - Distribution
 - Modification
 - Private use
-For more details see [license](https://github.com/NvRose/tabline/license).
+For more details see [license](https://github.com/NvRose/tabline.nvim/license).
