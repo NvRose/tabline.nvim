@@ -1,50 +1,36 @@
-M = {}
+local cfg = {}
 
-M.get_item = function(group, item, index, modified)
-    local active = index == vim.fn.tabpagenr()
-    if modified then
-        group = group .. 'Modified'
-    end
-    if active then
-        group = group .. 'Sel'
-    end
+local default = {
+	devicons = true,
+	padding = 3,
+	custom_titles = {
+		{ filetype = 'TelescopePrompt', title = 'telescope' }
+	},
+	custom_devicons_filetypes = {
+		{ filetype = 'TelescopePrompt', extension = 'telescope' }
+	}
+}
 
-    return '%#' .. group .. '# ' .. item .. ' %*'
-end
-
-M.get_tabname = function(bufname, index)
-    local title = vim.fn.gettabvar(index, 'TablineTitle')
-    if title ~= vim.NIL and title ~= '' then
-        return title
-    end
-    return vim.fn.fnamemodify(bufname, ':t')
-end
-
-M.run = function()
+local run = function()
 	local s = ''
+	local next
+	local tab = require('tab')
 
-	for i = 1, vim.fn.tabpagenr('$') do
-		local winnr = vim.fn.tabpagewinnr(i)
-		local bufnr = vim.fn.tabpagebuflist(i)[winnr]
-		local bufname = vim.fn.bufname(bufnr)
-		local tabname = M.get_tabname(bufname, i)
-
-		s = s .. '%' .. i .. 'T'
-
-		local tabline_items = {
-		  	M.get_item('Tab', tabname, i)
-		}
-
-		if tabname ~= "" then
-			s = s .. table.concat(tabline_items)
-		end
+	for i = 1, vim.fn.tabpagenr('$'), 1 do
+		-- Make tabs clickable
+		s = s .. '%' .. i .. 'T' .. tab(i, cfg)
 	end
 
 	return s
 end
 
-M.setup = function()
-	vim.opt.tal = '%!v:lua.require("tabline").run()'
-end
+return {
+	run = run,
+	setup = function(config)
+		cfg = config
+			and vim.tbl_deep_extend('force', default, config)
+			or default
 
-return M
+		vim.opt.tal = '%!v:lua.require\'tabline\'.run()'
+	end
+}
