@@ -64,7 +64,6 @@ end
 local run = function()
 	local s = ''
 	local next
-	local tab = require('tab')
 
 	for i = 1, vim.fn.tabpagenr('$'), 1 do
 		-- Make tabs clickable
