@@ -2,7 +2,7 @@ local fn = vim.fn
 local cfg = {}
 
 local default = {
-	devicons = true,
+	devicons = false,
 	padding = 3,
 	custom_titles = {
 		{ filetype = 'TelescopePrompt', title = 'telescope' }
@@ -23,7 +23,7 @@ local title = function(bufnr, custom)
 		end
 	end
 
-	return fn.pathshorten(fn.fnamemodify(f, ':p:~:t'))
+	return fn.pathshorten(fn.fnamemodify(f, ':t'))
 end
 
 local devicon = function(bufname, bufnr, custom)
@@ -66,7 +66,6 @@ local run = function()
 	local next
 
 	for i = 1, vim.fn.tabpagenr('$'), 1 do
-		-- Make tabs clickable
 		s = s .. '%' .. i .. 'T' .. tab(i, cfg)
 	end
 
@@ -80,6 +79,6 @@ return {
 			and vim.tbl_deep_extend('force', default, config)
 			or default
 
-		vim.opt.tal = '%!v:lua.require\'tabline\'.run()'
+		vim.o.tabline = '%!v:lua.require("NvRose.base.tabline").run()'
 	end
 }
