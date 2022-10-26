@@ -7,3 +7,7 @@
 <p align=center>
     The plugin is part of NvRose base.
 </p><br><br>
+
+<p align=center>
+    <img src=https://user-images.githubusercontent.com/93622468/198108732-9fedc006-6c4f-420f-bfa8-4935f7f2c22d.png>
+</p><br><br>
