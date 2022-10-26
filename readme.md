@@ -9,5 +9,5 @@
 </p><br><br>
 
 <p align=center>
-    <img src=https://user-images.githubusercontent.com/93622468/198108732-9fedc006-6c4f-420f-bfa8-4935f7f2c22d.png>
+    <img src=https://user-images.githubusercontent.com/93622468/198148932-23f72ffa-cec0-42a8-8a48-fd8604693acb.png>
 </p><br><br>
