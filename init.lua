@@ -2,20 +2,19 @@ local fn = vim.fn
 local cfg = {}
 
 local default = {
-	devicons = false,
+	devicons = true,
 	padding = 3,
 	custom_titles = {
-		{ filetype = 'TelescopePrompt', title = 'telescope' }
+		{ filetype = "TelescopePrompt", title = "telescope" },
 	},
 	custom_devicons_filetypes = {
-		{ filetype = 'TelescopePrompt', extension = 'telescope' }
-	}
+		{ filetype = "TelescopePrompt", extension = "telescope" },
+	},
 }
 
 local title = function(bufnr, custom)
 	local f = fn.bufname(bufnr)
-	local bt = fn.getbufvar(bufnr, '&buftype')
-	local ft = fn.getbufvar(bufnr, '&filetype')
+	local ft = fn.getbufvar(bufnr, "&filetype")
 
 	for _, i in ipairs(custom) do
 		if i.filetype == ft then
@@ -23,24 +22,19 @@ local title = function(bufnr, custom)
 		end
 	end
 
-	return fn.pathshorten(fn.fnamemodify(f, ':t'))
+	return vim.fn.fnamemodify(f, ":t")
 end
 
-local devicon = function(bufname, bufnr, custom)
-	local extension = fn.expand('#'..bufnr..':e')
-	local devicon = require('nvim-web-devicons').get_icon
+local devicon = function(bufnr, custom)
+	local ft = fn.getbufvar(bufnr, "&filetype")
+	local devicons = require("nvim-web-devicons")
 
-	for _, i in ipairs(custom) do
-		if i.filetype == extension then
-			local icon, color = devicon(i.extension)
-			if icon then icon = icon .. ' ' end
-			return icon
-		end
+	local icon = devicons.get_icon_by_filetype(ft)
+	if icon then
+		return icon .. " "
+	else
+		return ""
 	end
-
-	local icon, color = devicon(bufname, extension)
-	if icon then icon = icon .. ' ' end
-	return icon
 end
 
 local tab = function(index, config)
@@ -49,25 +43,24 @@ local tab = function(index, config)
 	local bufname = fn.bufname(bufnr)
 
 	local selected = fn.tabpagenr() == index
-	local modified = vim.fn.getbufvar(bufnr, '&modified') == 1
+	local modified = vim.fn.getbufvar(bufnr, "&modified") == 1
 
-	return (selected and '%#TabLineSel#' or '%#TabLine#')
-		.. (modified and '%#TabLineModified#' or '')
-		.. string.rep(' ', config.padding)
-		.. (config.devicons
-			and devicon(bufname, bufnr, config.custom_devicons_filetypes)
-			or '')
+	return (selected and "%#TabLineSel#" or "%#TabLine#")
+		.. (modified and "%#TabLineModified#" or "")
+		.. string.rep(" ", config.padding)
+		.. (config.devicons and devicon(bufnr, config.custom_devicons_filetypes) or "")
 		.. title(bufnr, config.custom_titles)
-		.. string.rep(' ', config.padding)
+		.. string.rep(" ", config.padding)
 end
 
 local run = function()
-	local s = ''
-	local next
+	local s = ""
 
-	for i = 1, vim.fn.tabpagenr('$'), 1 do
-		s = s .. '%' .. i .. 'T' .. tab(i, cfg)
+	for i = 1, vim.fn.tabpagenr("$"), 1 do
+		s = s .. "%" .. i .. "T" .. tab(i, cfg)
 	end
+
+	s = s .. "%#TabLineFill#"
 
 	return s
 end
@@ -75,10 +68,8 @@ end
 return {
 	run = run,
 	setup = function(config)
-		cfg = config
-			and vim.tbl_deep_extend('force', default, config)
-			or default
+		cfg = config and vim.tbl_deep_extend("force", default, config) or default
 
-		vim.o.tabline = '%!v:lua.require("NvRose.base.tabline").run()'
-	end
+		vim.opt.tabline = '%!v:lua.require("NvRose.base.tabline").run()'
+	end,
 }
