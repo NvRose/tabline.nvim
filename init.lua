@@ -33,14 +33,14 @@ end
 local get_title = function(bufnr, custom)
 	local f = fn.bufname(bufnr)
 	local ft = fn.getbufvar(bufnr, "&filetype")
+	local title = devicon(bufnr) .. fn.fnamemodify(f, ":t")
 
 	for _, i in ipairs(custom) do
 		if i.filetype == ft then
-			return i.title
+			title = i.title
 		end
 	end
 
-	local title = devicon(bufnr) .. fn.fnamemodify(f, ":t")
 	local title_len = string.len(title)
 	local win_width = get_cols()
 
