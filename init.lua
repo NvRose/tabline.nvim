@@ -1,14 +1,4 @@
 local fn = vim.fn
-local cfg = {}
-
-local default = {
-	custom_titles = {
-		{ filetype = "TelescopePrompt", title = "telescope" },
-	},
-	custom_devicons_filetypes = {
-		{ filetype = "TelescopePrompt", extension = "telescope" },
-	},
-}
 
 local devicon = function(bufnr)
 	local ft = fn.getbufvar(bufnr, "&filetype")
@@ -22,34 +12,19 @@ local devicon = function(bufnr)
 	end
 end
 
-local function get_cols()
-	local f = assert(io.popen("tput cols", "r"))
-	local cols = f:read("a")
-	f:close()
-
-	return tonumber(cols)
-end
-
-local get_title = function(bufnr, custom)
+local get_title = function(bufnr)
 	local f = fn.bufname(bufnr)
-	local ft = fn.getbufvar(bufnr, "&filetype")
 	local title = devicon(bufnr) .. fn.fnamemodify(f, ":t")
 
-	for _, i in ipairs(custom) do
-		if i.filetype == ft then
-			title = i.title
-		end
-	end
-
 	local title_len = string.len(title)
-	local win_width = get_cols()
+	local win_width = vim.api.nvim_win_get_width(0)
 
-	local padding = math.floor(((win_width / fn.tabpagenr("$") - title_len) + 0.5) / 2) + 1
+	local padding = math.floor(((win_width / fn.tabpagenr("$") - title_len) + 0.5) / 2)
 
 	return string.rep(" ", padding) .. title .. string.rep(" ", padding)
 end
 
-local tab = function(index, config)
+local tab = function(index)
 	local winnr = fn.tabpagewinnr(index)
 	local bufnr = fn.tabpagebuflist(index)[winnr]
 
@@ -58,26 +33,22 @@ local tab = function(index, config)
 
 	return (selected and "%#TabLineSel#" or "%#TabLine#")
 		.. (modified and "%#TabLineModified#" or "")
-		.. get_title(bufnr, config.custom_titles)
+		.. get_title(bufnr)
 end
 
 local run = function()
 	local s = ""
 
 	for i = 1, fn.tabpagenr("$"), 1 do
-		s = s .. "%" .. i .. "T" .. tab(i, cfg)
+		s = s .. "%" .. i .. "T" .. tab(i)
 	end
-
-	s = s .. "%#TabLineFill#"
 
 	return s
 end
 
 return {
 	run = run,
-	setup = function(config)
-		cfg = config and vim.tbl_deep_extend("force", default, config) or default
+	setup = function()
 		vim.opt.tabline = '%!v:lua.require("NvRose.base.tabline").run()'
-		vim.cmd("redrawtabline")
 	end,
 }
