@@ -17,7 +17,11 @@ local get_title = function(bufnr)
 	local title = devicon(bufnr) .. fn.fnamemodify(f, ":t")
 
 	local title_len = string.len(title)
-	local win_width = vim.api.nvim_command_output("echo &columns")
+	local win_width = tonumber(vim.api.nvim_command_output("echo &columns"))
+
+	if not win_width then
+		return ""
+	end
 
 	local padding = math.floor(((win_width / fn.tabpagenr("$") - title_len) + 0.5) / 2)
 
