@@ -19,8 +19,6 @@ local get_title = function(bufnr)
 	local title_len = string.len(title)
 	local win_width = vim.api.nvim_command_output("echo &columns")
 
-	print(vim.api.nvim_get_var)
-
 	local padding = math.floor(((win_width / fn.tabpagenr("$") - title_len) + 0.5) / 2)
 
 	return string.rep(" ", padding) .. title .. string.rep(" ", padding)
